@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Faketouches.js</title>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <style>
+
+        body {
+            padding: 30px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="touchelement"></div>
+
+<!-- jQuery is just for the demo! Hammer.js works without jQuery :-) -->
+<script src="http://code.jquery.com/jquery.min.js"></script>
+
+<script src="../dist/faketouches-latest.js"></script>
+
+<script src="http://eightmedia.github.com/hammer.js/v2/dist/hammer-latest.js"></script>
+<script src="http://eightmedia.github.com/hammer.js/v2/plugins/hammer.showtouches.js"></script>
+
+
+<script>
+
+    // for some debugging
+    var hammertime = Hammer(document.getElementById('touchelement'));
+    Hammer.plugins.showTouches();
+
+    hammertime.on('touch tap hold drag release', function(ev) {
+        console.log(ev.type);
+    });
+
+
+    // start faker
+    var faker = new FakeTouches(hammertime.element);
+
+    function tap() {
+        faker.setTouches([[100,100]]);
+        faker.start();
+        faker.end();
+    };
+
+    function hold() {
+        faker.setTouches([[100,100]]);
+        faker.start();
+
+        setTimeout(function() {
+            faker.end();
+        }, 600);        
+    };
+
+    function drag() {
+        faker.setTouches([[100,100]]);
+        faker.start();
+
+        var moves=0;
+        var drag_interval = setInterval(function() {
+            if(moves == 20) {
+                faker.end();
+                clearInterval(drag_interval);
+                return;
+            }
+            faker.moveBy(6,1);
+            moves++;
+        }, 10);        
+    };
+
+
+</script>
+</body>
+</html>

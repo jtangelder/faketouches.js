@@ -1,6 +1,9 @@
 (function(window) {
 	'use strict';
 
+	// simple hack to trick touch detection
+	window.ontouchstart = true;
+
 
 	function FakeTouches(element) {
 		this.element = element;
@@ -19,9 +22,17 @@
 	};
 
 
-	FakeTouches.prototype.start = function() {
-		this.triggerEvent('touchstart', this.touches);
-	};
+	/**
+	 * simple methods to just trigger an event
+	 */
+	['start','end','move','cancel'].forEach(function(val) {
+		FakeTouches.prototype[val] = (function(type) {
+			return function() {
+				this.triggerEvent('touch'+ type, this.touches);
+			};
+		})(val);
+	});
+
 
 	/**
 	 * move touches to new positions. all with x ammount, or per touch
@@ -29,38 +40,48 @@
 	 * @param  {Number} [dy]
 	 */
 	FakeTouches.prototype.moveBy = function(dx, dy) {
+		var self = this;
 		// each touch must be updated
 		if(typeof dx == 'object') {
 			var delta_touches = dx;
 			this.touches.forEach(function(val, i) {
-				this.touches[i][0] += delta_touches[i][0];
-				this.touches[i][1] += delta_touches[i][1];
+				self.touches[i][0] += delta_touches[i][0];
+				self.touches[i][1] += delta_touches[i][1];
 			});
 		}
 		// add dx,dy to all touches
 		else {
 			this.touches.forEach(function(val, i) {
-				this.touches[i][0] += dx;
-				this.touches[i][1] += dy;
+				self.touches[i][0] += dx;
+				self.touches[i][1] += dy;
 			});
 		}
+
+		this.triggerEvent('touchmove', this.touches);
 
 		return this.touches;
 	};
 
-	FakeTouches.prototype.end = function() {
-		this.triggerEvent('touchend', this.touches);
-	};
 
-	FakeTouches.prototype.cancel = function() {
-		this.triggerEvent('touchcancel', this.touches);
+	FakeTouches.prototype.createTouchList = function(touches) {
+		var touchlist = [];
+		touches.forEach(function(val, index) {
+			touchlist.push({
+				pageX: val[0],
+				pageY: val[1],
+				clientX: val[0],
+				clientY: val[1],
+				identifier: index
+			});
+		});
+		return touchlist;
 	};
 
 
 	FakeTouches.prototype.triggerEvent = function(name, touches) {
 		var event = document.createEvent('Event');
 		event.initEvent(name, true, true);
-		event.touches = touches;
+		event.touches = this.createTouchList(touches);
 		return this.element.dispatchEvent(event);
 	};
 
