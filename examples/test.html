@@ -31,13 +31,14 @@
     var hammertime = Hammer(document.getElementById('touchelement'));
     Hammer.plugins.showTouches();
 
-    hammertime.on('touch tap hold drag release', function(ev) {
+    hammertime.on('touch tap hold drag release pinchin pinchout rotate', function(ev) {
         console.log(ev.type);
     });
 
 
     // start faker
     var faker = new FakeTouches(hammertime.element);
+
 
     function tap() {
         faker.setTouches([[100,100]]);
@@ -59,16 +60,64 @@
         faker.start();
 
         var moves=0;
-        var drag_interval = setInterval(function() {
+        var interval = setInterval(function() {
             if(moves == 20) {
                 faker.end();
-                clearInterval(drag_interval);
+                clearInterval(interval);
                 return;
             }
             faker.moveBy(6,1);
             moves++;
-        }, 10);        
+        }, 30);        
     };
+
+    function pinchout() {
+        faker.setTouches([[150,50],[50,150]]);
+        faker.start();
+
+        var moves=0;
+        var interval = setInterval(function() {
+            if(moves == 20) {
+                faker.end();
+                clearInterval(interval);
+                return;
+            }
+            faker.moveBy([[1,-1],[-1,1]]);
+            moves++;
+        }, 30);        
+    }
+
+    function pinchin() {
+        faker.setTouches([[150,50],[50,150]]);
+        faker.start();
+
+        var moves=0;
+        var interval = setInterval(function() {
+            if(moves == 20) {
+                faker.end();
+                clearInterval(interval);
+                return;
+            }
+            faker.moveBy([[-1,1],[1,-1]]);
+            moves++;
+        }, 30);        
+    }
+
+    function rotate() {
+        faker.setTouches([[150,50],[150,150]]);
+        faker.start();
+
+        var moves=0;
+        var interval = setInterval(function() {
+            if(moves == 20) {
+                faker.end();
+                clearInterval(interval);
+                return;
+            }
+            faker.moveBy([[2,1],[-1,-2]]);
+            moves++;
+        }, 30);        
+    }
 
 
 </script>

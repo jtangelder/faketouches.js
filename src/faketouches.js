@@ -57,7 +57,7 @@
 			});
 		}
 
-		this.triggerEvent('touchmove', this.touches);
+		this.move();
 
 		return this.touches;
 	};
