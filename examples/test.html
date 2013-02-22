@@ -31,8 +31,8 @@
     var hammertime = Hammer(document.getElementById('touchelement'));
     Hammer.plugins.showTouches();
 
-    hammertime.on('touch tap hold drag release pinchin pinchout rotate', function(ev) {
-        console.log(ev.type);
+    hammertime.on('touch tap hold drag release transformstart transformend pinchin pinchout rotatestart rotate rotatestart', function(ev) {
+        console.log('type', ev);
     });
 
 
@@ -128,6 +128,12 @@
             faker.move(new_pos);
             rotation += 2;
         }, 20);
+
+
+        setTimeout(function() {
+            clearInterval(interval);
+            faker.end();
+        }, 2000);
     }
 
 
