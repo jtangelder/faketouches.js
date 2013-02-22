@@ -18,7 +18,7 @@
 	 * @param {Array} touches
 	 */
 	FakeTouches.prototype.setTouches = function(touches) {
-		this.touches = touches;
+		return this.touches = touches;
 	};
 
 
@@ -27,7 +27,10 @@
 	 */
 	['start','end','move','cancel'].forEach(function(val) {
 		FakeTouches.prototype[val] = (function(type) {
-			return function() {
+			return function(touches) {
+                if(touches) {
+                    this.touches = touches;
+                }
 				this.triggerEvent('touch'+ type, this.touches);
 			};
 		})(val);

@@ -1,4 +1,4 @@
-/*! faketouches.js - v0.0.1 - 2013-02-06
+/*! faketouches.js - v0.0.1 - 2013-02-22
  * Copyright (c) 2013 Jorik Tangelder <j.tangelder@gmail.com>;
  * Licensed under the MIT license */
 
@@ -22,7 +22,7 @@
 	 * @param {Array} touches
 	 */
 	FakeTouches.prototype.setTouches = function(touches) {
-		this.touches = touches;
+		return this.touches = touches;
 	};
 
 
@@ -31,7 +31,10 @@
 	 */
 	['start','end','move','cancel'].forEach(function(val) {
 		FakeTouches.prototype[val] = (function(type) {
-			return function() {
+			return function(touches) {
+                if(touches) {
+                    this.touches = touches;
+                }
 				this.triggerEvent('touch'+ type, this.touches);
 			};
 		})(val);

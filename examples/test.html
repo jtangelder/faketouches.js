@@ -104,21 +104,35 @@
     }
 
     function rotate() {
-        faker.setTouches([[150,50],[150,150]]);
+        var touches = faker.setTouches([[50,50],[150,150]]);
         faker.start();
 
-        var moves=0;
+        var center_x = 100;
+        var center_y = 100;
+
+        var rotation = 0;
+
         var interval = setInterval(function() {
-            if(moves == 20) {
-                faker.end();
-                clearInterval(interval);
-                return;
+            var rad = rotation * (Math.PI / 180);
+
+            var new_pos = [];
+            for(var t=0; t<touches.length; t++) {
+                var x = touches[t][0];
+                var y = touches[t][1];
+
+                new_pos.push([
+                    center_x + (x-center_x)*Math.cos(rad) - (y-center_y)*Math.sin(rad),
+                    center_y + (x-center_x)*Math.sin(rad) + (y-center_y)*Math.cos(rad)
+                ]);
             }
-            faker.moveBy([[2,1],[-1,-2]]);
-            moves++;
-        }, 30);        
+
+            faker.move(new_pos);
+            rotation += 2;
+        }, 50);
     }
 
+
+    rotate();
 
 </script>
 </body>
