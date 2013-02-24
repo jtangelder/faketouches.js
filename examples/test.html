@@ -31,7 +31,7 @@
     var hammertime = Hammer(document.getElementById('touchelement'));
 
 
-    hammertime.on('touch tap hold drag dragright release transformstart transform transformend pinchin pinchout swiperight swipe rotatestart rotate rotatestart', function(ev) {
+    hammertime.on('touch tap doubletap hold drag dragright release transformstart transform transformend pinchin pinchout swiperight swipe rotatestart rotate rotatestart', function(ev) {
         console.log('type', ev.type);
     });
 

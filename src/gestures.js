@@ -12,6 +12,22 @@
         }
     };
 
+    Gestures.DoubleTap = function(callback) {
+        var self = this;
+        self.setTouches([[100,100]]);
+        self.triggerStart();
+        self.triggerEnd();
+
+        setTimeout(function() {
+            self.triggerStart();
+            self.triggerEnd();
+
+            if(callback) {
+                callback();
+            }
+        }, 50);
+    };
+
     Gestures.Hold = function(callback) {
         var self = this;
         this.setTouches([[100,100]]);
