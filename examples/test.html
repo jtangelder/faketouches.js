@@ -19,20 +19,20 @@
 <!-- jQuery is just for the demo! Hammer.js works without jQuery :-) -->
 <script src="http://code.jquery.com/jquery.min.js"></script>
 
-<script src="../dist/faketouches-latest.js"></script>
+<script src="../dist/faketouches.js"></script>
 
-<script src="http://eightmedia.github.com/hammer.js/v2/dist/hammer-latest.js"></script>
-<script src="http://eightmedia.github.com/hammer.js/v2/plugins/hammer.showtouches.js"></script>
+<script src="https://raw.github.com/EightMedia/hammer.js/v2/dist/dev/hammer.js"></script>
+<script src="https://raw.github.com/EightMedia/hammer.js/v2/plugins/hammer.showtouches.js"></script>
 
 
 <script>
-
+    Hammer.plugins.showTouches(true);
     // for some debugging
     var hammertime = Hammer(document.getElementById('touchelement'));
-    Hammer.plugins.showTouches();
 
-    hammertime.on('touch tap hold drag release transformstart transformend pinchin pinchout rotatestart rotate rotatestart', function(ev) {
-        console.log('type', ev);
+
+    hammertime.on('touch tap hold drag dragright release transformstart transform transformend pinchin pinchout swiperight swipe rotatestart rotate rotatestart', function(ev) {
+        console.log('type', ev.type);
     });
 
 
@@ -40,101 +40,7 @@
     var faker = new FakeTouches(hammertime.element);
 
 
-    function tap() {
-        faker.setTouches([[100,100]]);
-        faker.start();
-        faker.end();
-    };
 
-    function hold() {
-        faker.setTouches([[100,100]]);
-        faker.start();
-
-        setTimeout(function() {
-            faker.end();
-        }, 600);        
-    };
-
-    function drag() {
-        faker.setTouches([[100,100]]);
-        faker.start();
-
-        var moves=0;
-        var interval = setInterval(function() {
-            if(moves == 20) {
-                faker.end();
-                clearInterval(interval);
-                return;
-            }
-            faker.moveBy(6,1);
-            moves++;
-        }, 30);        
-    };
-
-    function pinchout() {
-        faker.setTouches([[150,50],[50,150]]);
-        faker.start();
-
-        var moves=0;
-        var interval = setInterval(function() {
-            if(moves == 20) {
-                faker.end();
-                clearInterval(interval);
-                return;
-            }
-            faker.moveBy([[1,-1],[-1,1]]);
-            moves++;
-        }, 30);        
-    }
-
-    function pinchin() {
-        faker.setTouches([[150,50],[50,150]]);
-        faker.start();
-
-        var moves=0;
-        var interval = setInterval(function() {
-            if(moves == 20) {
-                faker.end();
-                clearInterval(interval);
-                return;
-            }
-            faker.moveBy([[-1,1],[1,-1]]);
-            moves++;
-        }, 30);        
-    }
-
-    function rotate() {
-        var touches = faker.setTouches([[50,50],[150,150]]);
-        faker.start();
-
-        var center_x = 100;
-        var center_y = 100;
-        var rotation = 0;
-
-        var interval = setInterval(function() {
-            var rad = rotation * (Math.PI / 180);
-
-            var new_pos = [];
-            for(var t=0; t<touches.length; t++) {
-                var x = touches[t][0];
-                var y = touches[t][1];
-
-                new_pos.push([
-                    center_x + (x-center_x)*Math.cos(rad) - (y-center_y)*Math.sin(rad),
-                    center_y + (x-center_x)*Math.sin(rad) + (y-center_y)*Math.cos(rad)
-                ]);
-            }
-
-            faker.move(new_pos);
-            rotation += 2;
-        }, 20);
-
-
-        setTimeout(function() {
-            clearInterval(interval);
-            faker.end();
-        }, 2000);
-    }
 
 
 </script>

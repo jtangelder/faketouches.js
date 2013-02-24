@@ -12,6 +12,18 @@
 	}
 
 
+    /**
+     * uppercase first char
+     * @param str
+     * @returns {string}
+     */
+    function ucfirst(str) {
+        str += '';
+        var f = str.charAt(0).toUpperCase();
+        return f + str.substr(1);
+    }
+
+
 	/**
 	 * insert touches by xy per touch
 	 * [ [x,y], [x,y] ]
@@ -26,7 +38,7 @@
 	 * simple methods to just trigger an event
 	 */
 	['start','end','move','cancel'].forEach(function(val) {
-		FakeTouches.prototype[val] = (function(type) {
+		FakeTouches.prototype['trigger'+ ucfirst(val)] = (function(type) {
 			return function(touches) {
                 if(touches) {
                     this.touches = touches;
@@ -60,7 +72,7 @@
 			});
 		}
 
-		this.move();
+		this.triggerMove();
 
 		return this.touches;
 	};
