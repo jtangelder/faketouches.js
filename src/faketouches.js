@@ -21,8 +21,8 @@
     FakeTouches.MOUSE_EVENTS = 400;
     FakeTouches.TOUCH_AND_MOUSE_EVENTS = 500;
 
-    FakeTouches.POINTER_TYPE_MOUSE = 100;
-    FakeTouches.POINTER_TYPE_TOUCH = 200;
+    FakeTouches.POINTER_TYPE_MOUSE = 1000;
+    FakeTouches.POINTER_TYPE_TOUCH = 2000;
 
 
     /**
