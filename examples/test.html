@@ -27,6 +27,7 @@
 
 <script>
     Hammer.plugins.showTouches(true);
+
     // for some debugging
     var hammertime = Hammer(document.getElementById('touchelement'));
 
@@ -39,6 +40,30 @@
     // start faker
     var faker = new FakeTouches(hammertime.element);
 
+    function setTouchType(touch_type) {
+
+        switch(touch_type) {
+            case faker.TOUCH_EVENTS:
+            case faker.TOUCH_AND_MOUSE_EVENTS:
+                Hammer.HAS_POINTEREVENTS = false;
+                Hammer.HAS_TOUCHEVENTS = true;
+                break;
+
+            case faker.POINTER_TOUCH_EVENTS:
+            case faker.POINTER_MOUSE_EVENTS:
+                Hammer.HAS_POINTEREVENTS = true;
+                Hammer.HAS_TOUCHEVENTS = false;
+                break;
+
+            case faker.MOUSE_EVENTS:
+                Hammer.HAS_POINTEREVENTS = false;
+                Hammer.HAS_TOUCHEVENTS = false;
+                break;
+        }
+
+        faker.setTouchType(touch_type);
+        faker.triggerGesture('Rotate');
+    }
 
 
 

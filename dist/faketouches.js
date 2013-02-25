@@ -1,19 +1,41 @@
-/*! faketouches.js - v0.0.1 - 2013-02-24
+/*! faketouches.js - v0.0.1 - 2013-02-25
  * Copyright (c) 2013 Jorik Tangelder <j.tangelder@gmail.com>;
  * Licensed under the MIT license */
 
 (function(window) {
 	'use strict';
 
-	// simple hack to trick touch detection
-	window.ontouchstart = true;
 
-
+    /**
+     * create faketouches instance
+     * @param element
+     * @constructor
+     */
 	function FakeTouches(element) {
 		this.element = element;
 
 		this.touches = [];
+        this.touch_type = FakeTouches.TOUCH_EVENTS;
 	}
+
+    FakeTouches.POINTER_TOUCH_EVENTS = 100;
+    FakeTouches.POINTER_MOUSE_EVENTS = 200;
+    FakeTouches.TOUCH_EVENTS = 300;
+    FakeTouches.MOUSE_EVENTS = 400;
+    FakeTouches.TOUCH_AND_MOUSE_EVENTS = 500;
+
+    FakeTouches.POINTER_TYPE_MOUSE = 100;
+    FakeTouches.POINTER_TYPE_TOUCH = 200;
+    FakeTouches.POINTER_TYPE_PEN = 300;
+
+
+    /**
+     * set the kind of touchevents we want to trigger
+     * @param   {Number}    touch_type
+     */
+    FakeTouches.prototype.setTouchType = function(touch_type) {
+        this.touch_type = touch_type;
+    };
 
 
     /**
@@ -47,7 +69,7 @@
                 if(touches) {
                     this.touches = touches;
                 }
-				this.triggerEvent('touch'+ type, this.touches);
+				this.triggerEvent(type);
 			};
 		})(val);
 	});
@@ -97,12 +119,116 @@
 	};
 
 
-	FakeTouches.prototype.triggerEvent = function(name, touches) {
-		var event = document.createEvent('Event');
-		event.initEvent(name, true, true);
-		event.touches = this.createTouchList(touches);
-		return this.element.dispatchEvent(event);
+
+	FakeTouches.prototype.triggerEvent = function(type) {
+        switch(this.touch_type) {
+            case FakeTouches.TOUCH_EVENTS:
+                triggerTouch.call(this, type);
+                break;
+
+            case FakeTouches.MOUSE_EVENTS:
+                triggerMouse.call(this, type);
+                break;
+
+            case FakeTouches.TOUCH_AND_MOUSE_EVENTS:
+                triggerTouch.call(this, type);
+                triggerMouse.call(this, type);
+                break;
+
+            case FakeTouches.POINTER_TOUCH_EVENTS:
+                triggerPointerEvent.call(this, type, this.POINTER_TYPE_TOUCH);
+                break;
+
+            case FakeTouches.POINTER_MOUSE_EVENTS:
+                triggerPointerEvent.call(this, type, this.POINTER_TYPE_MOUSE);
+                break;
+        }
 	};
+
+
+    /**
+     * trigger touch event
+     * @param el
+     * @param name
+     * @param touches
+     * @returns {Boolean}
+     */
+    function triggerTouch(type) {
+        var event = document.createEvent('Event');
+        event.initEvent('touch'+ type, true, true);
+        event.touches = this.createTouchList(this.touches);
+        return this.element.dispatchEvent(event);
+    }
+
+
+    /**
+     * trigger mouse event
+     * @param el
+     * @param type
+     * @param touches
+     * @returns {Boolean}
+     */
+    function triggerMouse(type) {
+        var names = {
+            start: 'mousedown',
+            move: 'mousemove',
+            end: 'mouseup'
+        };
+
+        var event = document.createEvent('Event');
+        event.initEvent(names[type], true, true);
+        var touchList = this.createTouchList(this.touches);
+        event.pageX = touchList[0].pageX;
+        event.pageY = touchList[0].pagY;
+        event.clientX = touchList[0].clientX;
+        event.clientY = touchList[0].clientY;
+        event.target = this.element;
+        event.which = 1;
+        return this.element.dispatchEvent(event);
+    }
+
+    /**
+     * trigger mouse event
+     * @param el
+     * @param type
+     * @param touches
+     * @returns {Boolean}
+     */
+    function triggerPointerEvent(type, pointerType) {
+        var self = this;
+        var names = {
+            start: 'MSPointerDown',
+            move: 'MSPointerMove',
+            end: 'MSPointerUp'
+        };
+
+        var touchList = this.createTouchList(this.touches);
+        touchList.forEach(function(touch) {
+            var event = document.createEvent('Event');
+            event.initEvent(names[type], true, true);
+
+            event.MSPOINTER_TYPE_MOUSE = FakeTouches.POINTER_TYPE_MOUSE;
+            event.MSPOINTER_TYPE_TOUCH = FakeTouches.POINTER_TYPE_TOUCH;
+            event.MSPOINTER_TYPE_PEN = FakeTouches.POINTER_TYPE_PEN;
+
+            event.pointerId = touch.identifier;
+            event.pointerType = pointerType;
+            event.pageX = touch.pageX;
+            event.pageY = touch.pagY;
+            event.clientX = touch.clientX;
+            event.clientY = touch.clientY;
+            event.target = self.element;
+
+            if(pointerType === FakeTouches.POINTER_TYPE_MOUSE) {
+                event.which = 1;
+                event.button = 1;
+            }
+            self.element.dispatchEvent(event);
+        });
+
+        return true;
+    }
+
 
 	window.FakeTouches = FakeTouches;
 })(window);
