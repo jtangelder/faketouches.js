@@ -16,6 +16,7 @@
 
 		this.touches = [];
         this.touch_type = FakeTouches.TOUCH_EVENTS;
+        this.has_multitouch = true;
 	}
 
     FakeTouches.POINTER_TOUCH_EVENTS = 100;
@@ -26,7 +27,6 @@
 
     FakeTouches.POINTER_TYPE_MOUSE = 100;
     FakeTouches.POINTER_TYPE_TOUCH = 200;
-    FakeTouches.POINTER_TYPE_PEN = 300;
 
 
     /**
@@ -35,6 +35,12 @@
      */
     FakeTouches.prototype.setTouchType = function(touch_type) {
         this.touch_type = touch_type;
+
+        this.has_multitouch = true;
+        if(touch_type == FakeTouches.POINTER_MOUSE_EVENTS ||
+            touch_type == FakeTouches.MOUSE_EVENTS) {
+            this.has_multitouch = false;
+        }
     };
 
 
@@ -136,11 +142,11 @@
                 break;
 
             case FakeTouches.POINTER_TOUCH_EVENTS:
-                triggerPointerEvent.call(this, type, this.POINTER_TYPE_TOUCH);
+                triggerPointerEvents.call(this, type, FakeTouches.POINTER_TYPE_TOUCH);
                 break;
 
             case FakeTouches.POINTER_MOUSE_EVENTS:
-                triggerPointerEvent.call(this, type, this.POINTER_TYPE_MOUSE);
+                triggerPointerEvents.call(this, type, FakeTouches.POINTER_TYPE_MOUSE);
                 break;
         }
 	};
@@ -148,9 +154,7 @@
 
     /**
      * trigger touch event
-     * @param el
-     * @param name
-     * @param touches
+     * @param type
      * @returns {Boolean}
      */
     function triggerTouch(type) {
@@ -163,9 +167,7 @@
 
     /**
      * trigger mouse event
-     * @param el
      * @param type
-     * @param touches
      * @returns {Boolean}
      */
     function triggerMouse(type) {
@@ -179,7 +181,7 @@
         event.initEvent(names[type], true, true);
         var touchList = this.createTouchList(this.touches);
         event.pageX = touchList[0].pageX;
-        event.pageY = touchList[0].pagY;
+        event.pageY = touchList[0].pageY;
         event.clientX = touchList[0].clientX;
         event.clientY = touchList[0].clientY;
         event.target = this.element;
@@ -188,13 +190,12 @@
     }
 
     /**
-     * trigger mouse event
-     * @param el
+     * trigger pointer event
      * @param type
-     * @param touches
+     * @param pointerType
      * @returns {Boolean}
      */
-    function triggerPointerEvent(type, pointerType) {
+    function triggerPointerEvents(type, pointerType) {
         var self = this;
         var names = {
             start: 'MSPointerDown',
@@ -209,20 +210,19 @@
 
             event.MSPOINTER_TYPE_MOUSE = FakeTouches.POINTER_TYPE_MOUSE;
             event.MSPOINTER_TYPE_TOUCH = FakeTouches.POINTER_TYPE_TOUCH;
-            event.MSPOINTER_TYPE_PEN = FakeTouches.POINTER_TYPE_PEN;
 
             event.pointerId = touch.identifier;
             event.pointerType = pointerType;
             event.pageX = touch.pageX;
-            event.pageY = touch.pagY;
+            event.pageY = touch.pageY;
             event.clientX = touch.clientX;
             event.clientY = touch.clientY;
             event.target = self.element;
 
             if(pointerType === FakeTouches.POINTER_TYPE_MOUSE) {
                 event.which = 1;
-                event.button = 1;
             }
+
             self.element.dispatchEvent(event);
         });
 
