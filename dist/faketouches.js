@@ -1,9 +1,9 @@
-/*! faketouches.js - v0.0.1 - 2013-02-25
+/*! faketouches.js - v0.0.2 - 2013-03-07
  * Copyright (c) 2013 Jorik Tangelder <j.tangelder@gmail.com>;
  * Licensed under the MIT license */
 
 (function(window) {
-	'use strict';
+    'use strict';
 
 
     /**
@@ -11,13 +11,13 @@
      * @param element
      * @constructor
      */
-	function FakeTouches(element) {
-		this.element = element;
+    function FakeTouches(element) {
+        this.element = element;
 
-		this.touches = [];
+        this.touches = [];
         this.touch_type = FakeTouches.TOUCH_EVENTS;
         this.has_multitouch = true;
-	}
+    }
 
     FakeTouches.POINTER_TOUCH_EVENTS = 100;
     FakeTouches.POINTER_MOUSE_EVENTS = 200;
@@ -56,77 +56,78 @@
     }
 
 
-	/**
-	 * insert touches by xy per touch
-	 * [ [x,y], [x,y] ]
-	 * @param {Array} touches
-	 */
-	FakeTouches.prototype.setTouches = function(touches) {
-		return this.touches = touches;
-	};
+    /**
+     * insert touches by xy per touch
+     * [ [x,y], [x,y] ]
+     * @param {Array} touches
+     */
+    FakeTouches.prototype.setTouches = function(touches) {
+        return this.touches = touches;
+    };
 
 
-	/**
-	 * simple methods to just trigger an event
-	 */
-	['start','end','move','cancel'].forEach(function(val) {
-		FakeTouches.prototype['trigger'+ ucfirst(val)] = (function(type) {
-			return function(touches) {
+    /**
+     * simple methods to just trigger an event
+     */
+    ['start','end','move','cancel'].forEach(function(val) {
+        FakeTouches.prototype['trigger'+ ucfirst(val)] = (function(type) {
+            return function(touches) {
                 if(touches) {
                     this.touches = touches;
                 }
-				this.triggerEvent(type);
-			};
-		})(val);
-	});
+
+                this.triggerEvent(type);
+            };
+        })(val);
+    });
 
 
-	/**
-	 * move touches to new positions. all with x ammount, or per touch
-	 * @param  {Mixed}	dx		When dx is an array, each touch can be updated
-	 * @param  {Number} [dy]
-	 */
-	FakeTouches.prototype.moveBy = function(dx, dy) {
-		var self = this;
-		// each touch must be updated
-		if(typeof dx == 'object') {
-			var delta_touches = dx;
-			this.touches.forEach(function(val, i) {
-				self.touches[i][0] += delta_touches[i][0];
-				self.touches[i][1] += delta_touches[i][1];
-			});
-		}
-		// add dx,dy to all touches
-		else {
-			this.touches.forEach(function(val, i) {
-				self.touches[i][0] += dx;
-				self.touches[i][1] += dy;
-			});
-		}
+    /**
+     * move touches to new positions. all with x ammount, or per touch
+     * @param  {Mixed}	dx		When dx is an array, each touch can be updated
+     * @param  {Number} [dy]
+     */
+    FakeTouches.prototype.moveBy = function(dx, dy) {
+        var self = this;
+        // each touch must be updated
+        if(typeof dx == 'object') {
+            var delta_touches = dx;
+            this.touches.forEach(function(val, i) {
+                self.touches[i][0] += delta_touches[i][0];
+                self.touches[i][1] += delta_touches[i][1];
+            });
+        }
+        // add dx,dy to all touches
+        else {
+            this.touches.forEach(function(val, i) {
+                self.touches[i][0] += dx;
+                self.touches[i][1] += dy;
+            });
+        }
 
-		this.triggerMove();
+        this.triggerMove();
 
-		return this.touches;
-	};
-
-
-	FakeTouches.prototype.createTouchList = function(touches) {
-		var touchlist = [];
-		touches.forEach(function(val, index) {
-			touchlist.push({
-				pageX: val[0],
-				pageY: val[1],
-				clientX: val[0],
-				clientY: val[1],
-				identifier: index
-			});
-		});
-		return touchlist;
-	};
+        return this.touches;
+    };
 
 
+    FakeTouches.prototype.createTouchList = function(touches) {
+        var touchlist = [];
+        touches.forEach(function(val, index) {
+            touchlist.push({
+                pageX: val[0],
+                pageY: val[1],
+                clientX: val[0],
+                clientY: val[1],
+                identifier: index
+            });
+        });
+        return touchlist;
+    };
 
-	FakeTouches.prototype.triggerEvent = function(type) {
+
+
+    FakeTouches.prototype.triggerEvent = function(type) {
         switch(this.touch_type) {
             case FakeTouches.TOUCH_EVENTS:
                 triggerTouch.call(this, type);
@@ -149,7 +150,7 @@
                 triggerPointerEvents.call(this, type, FakeTouches.POINTER_TYPE_MOUSE);
                 break;
         }
-	};
+    };
 
 
     /**
@@ -160,7 +161,15 @@
     function triggerTouch(type) {
         var event = document.createEvent('Event');
         event.initEvent('touch'+ type, true, true);
-        event.touches = this.createTouchList(this.touches);
+
+        var touchlist = this.createTouchList(this.touches);
+        if(type == 'end' || type == 'cancel') {
+            event.touches = [];
+        }
+        else {
+            event.touches = touchlist;
+        }
+
         return this.element.dispatchEvent(event);
     }
 
@@ -180,12 +189,14 @@
         var event = document.createEvent('Event');
         event.initEvent(names[type], true, true);
         var touchList = this.createTouchList(this.touches);
-        event.pageX = touchList[0].pageX;
-        event.pageY = touchList[0].pageY;
-        event.clientX = touchList[0].clientX;
-        event.clientY = touchList[0].clientY;
-        event.target = this.element;
-        event.which = 1;
+        if(touchList[0]) {
+            event.pageX = touchList[0].pageX;
+            event.pageY = touchList[0].pageY;
+            event.clientX = touchList[0].clientX;
+            event.clientY = touchList[0].clientY;
+            event.target = this.element;
+            event.which = 1;
+        }
         return this.element.dispatchEvent(event);
     }
 
@@ -230,7 +241,7 @@
     }
 
 
-	window.FakeTouches = FakeTouches;
+    window.FakeTouches = FakeTouches;
 })(window);
 
 (function(FakeTouches) {
