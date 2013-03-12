@@ -41,6 +41,26 @@
         }, 600);
     };
 
+    Gestures.DragLeft = function(callback) {
+        var self = this;
+        self.setTouches([[220,100]]);
+        self.triggerStart();
+
+        var moves=0;
+        var interval = setInterval(function() {
+            if(moves == 20) {
+                self.triggerEnd();
+                clearInterval(interval);
+                if(callback) {
+                    callback();
+                }
+                return;
+            }
+            self.moveBy(-6,1);
+            moves++;
+        }, 30);
+    };
+    
     Gestures.DragRight = function(callback) {
         var self = this;
         self.setTouches([[100,100]]);
