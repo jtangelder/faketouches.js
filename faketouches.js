@@ -1,4 +1,4 @@
-/*! faketouches.js - v0.0.2 - 2013-03-07
+/*! faketouches.js - v0.0.3 - 2013-10-31
  * Copyright (c) 2013 Jorik Tangelder <j.tangelder@gmail.com>;
  * Licensed under the MIT license */
 
@@ -194,7 +194,6 @@
             event.pageY = touchList[0].pageY;
             event.clientX = touchList[0].clientX;
             event.clientY = touchList[0].clientY;
-            event.target = this.element;
             event.which = 1;
         }
         return this.element.dispatchEvent(event);
@@ -228,7 +227,6 @@
             event.pageY = touch.pageY;
             event.clientX = touch.clientX;
             event.clientY = touch.clientY;
-            event.target = self.element;
 
             if(pointerType === FakeTouches.POINTER_TYPE_MOUSE) {
                 event.which = 1;
@@ -287,6 +285,26 @@
         }, 600);
     };
 
+    Gestures.DragLeft = function(callback) {
+        var self = this;
+        self.setTouches([[220,100]]);
+        self.triggerStart();
+
+        var moves=0;
+        var interval = setInterval(function() {
+            if(moves == 20) {
+                self.triggerEnd();
+                clearInterval(interval);
+                if(callback) {
+                    callback();
+                }
+                return;
+            }
+            self.moveBy(-6,1);
+            moves++;
+        }, 30);
+    };
+    
     Gestures.DragRight = function(callback) {
         var self = this;
         self.setTouches([[100,100]]);

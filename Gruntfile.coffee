@@ -19,7 +19,7 @@ module.exports = (grunt) ->
           'src/faketouches.js'
           'src/gestures.js'
         ]
-        dest: 'dist/<%= pkg.name %>.js'
+        dest: '<%= pkg.name %>.js'
 
     # watch for changes
     watch:
