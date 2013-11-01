@@ -1,4 +1,4 @@
-/*! faketouches.js - v0.0.3 - 2013-11-01
+/*! faketouches.js - v0.0.4 - 2013-11-01
  * Copyright (c) 2013 Jorik Tangelder <j.tangelder@gmail.com>;
  * Licensed under the MIT license */
 
