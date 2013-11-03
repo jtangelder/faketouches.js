@@ -1,4 +1,4 @@
-/*! faketouches.js - v0.0.3 - 2013-11-01
+/*! faketouches.js - v0.0.4 - 2013-11-03
  * Copyright (c) 2013 Jorik Tangelder <j.tangelder@gmail.com>;
  * Licensed under the MIT license */
 
@@ -114,36 +114,20 @@
   FakeTouches.prototype._createTouchList = function(touches) {
     var self = this;
 
-    if(document.createTouchList) {
-      var _touches = [];
-      touches.forEach(function(val, index) {
-        var touch = document.createTouch(window,
-          self.element,
-          index,
-          val[0], val[1],
-          val[0], val[1]
-        );
-
-        _touches.push(touch);
+    var touchlist = [];
+    touches.forEach(function(val, index) {
+      touchlist.push({
+        target: self.element,
+        identifier: index,
+        pageX: val[0],
+        pageY: val[1],
+        screenX: val[0],
+        screenY: val[1],
+        clientX: val[0],
+        clientY: val[1]
       });
-      return document.createTouchList.apply(document, _touches);
-    }
-    else {
-      var touchlist = [];
-      touches.forEach(function(val, index) {
-        touchlist.push({
-          target: self.element,
-          identifier: index,
-          pageX: val[0],
-          pageY: val[1],
-          screenX: val[0],
-          screenY: val[1],
-          clientX: val[0],
-          clientY: val[1]
-        });
-      });
-      return touchlist;
-    }
+    });
+    return touchlist;
   };
 
 
