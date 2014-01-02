@@ -1,5 +1,5 @@
-/*! faketouches.js - v0.0.4 - 2013-11-03
- * Copyright (c) 2013 Jorik Tangelder <j.tangelder@gmail.com>;
+/*! faketouches.js - v0.0.4 - 2014-01-02
+ * Copyright (c) 2014 Jorik Tangelder <j.tangelder@gmail.com>;
  * Licensed under the MIT license */
 
 (function(window) {
@@ -27,6 +27,8 @@
 
   FakeTouches.POINTER_TYPE_MOUSE = 1000;
   FakeTouches.POINTER_TYPE_TOUCH = 2000;
+  
+  FakeTouches.IS_PHANTOMJS = navigator.userAgent.match(/phantomjs/i);
 
 
   /**
@@ -114,20 +116,36 @@
   FakeTouches.prototype._createTouchList = function(touches) {
     var self = this;
 
-    var touchlist = [];
-    touches.forEach(function(val, index) {
-      touchlist.push({
-        target: self.element,
-        identifier: index,
-        pageX: val[0],
-        pageY: val[1],
-        screenX: val[0],
-        screenY: val[1],
-        clientX: val[0],
-        clientY: val[1]
+    if(document.createTouchList && !FakeTouches.IS_PHANTOMJS) {
+      var _touches = [];
+      touches.forEach(function(val, index) {
+        var touch = document.createTouch(window,
+          self.element,
+          index,
+          val[0], val[1],
+          val[0], val[1]
+        );
+
+        _touches.push(touch);
       });
-    });
-    return touchlist;
+      return document.createTouchList.apply(document, _touches);
+    }
+    else {
+      var touchlist = [];
+      touches.forEach(function(val, index) {
+        touchlist.push({
+          target: self.element,
+          identifier: index,
+          pageX: val[0],
+          pageY: val[1],
+          screenX: val[0],
+          screenY: val[1],
+          clientX: val[0],
+          clientY: val[1]
+        });
+      });
+      return touchlist;
+    }
   };
 
 
