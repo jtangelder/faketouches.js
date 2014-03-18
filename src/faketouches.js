@@ -21,8 +21,8 @@
   FakeTouches.MOUSE_EVENTS = 400;
   FakeTouches.TOUCH_AND_MOUSE_EVENTS = 500;
 
-  FakeTouches.POINTER_TYPE_MOUSE = 1000;
-  FakeTouches.POINTER_TYPE_TOUCH = 2000;
+  FakeTouches.POINTER_TYPE_MOUSE = 'mouse';
+  FakeTouches.POINTER_TYPE_TOUCH = 'touch';
   
   FakeTouches.IS_PHANTOMJS = navigator.userAgent.match(/phantomjs/i);
 
