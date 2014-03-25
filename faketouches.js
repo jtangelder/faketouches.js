@@ -329,7 +329,7 @@
 
         var moves=0;
         var interval = setInterval(function() {
-            if(moves == 20) {
+            if(moves == 40) {
                 self.triggerEnd();
                 clearInterval(interval);
                 if(callback) {
@@ -337,9 +337,9 @@
                 }
                 return;
             }
-            self.moveBy(6,1);
+            self.moveBy(1.5,1);
             moves++;
-        }, 30);
+        }, 10);
     };
 
     Gestures.SwipeRight = function(callback) {
@@ -349,7 +349,7 @@
 
         var moves=0;
         var interval = setInterval(function() {
-            if(moves == 20) {
+            if(moves == 50) {
                 self.triggerEnd();
                 clearInterval(interval);
                 if(callback) {
@@ -357,9 +357,9 @@
                 }
                 return;
             }
-            self.moveBy(3*moves,1);
+            self.moveBy(1.2*moves,1);
             moves++;
-        }, 15);
+        }, 5);
     };
 
     Gestures.PinchOut = function(callback) {
