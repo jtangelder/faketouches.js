@@ -122,8 +122,8 @@
         var touch = document.createTouch(window,
           self.element,
           index,
-          val[0], val[1],
-          val[0], val[1]
+          parseInt(val[0],10), parseInt(val[1],10),
+          parseInt(val[0],10), parseInt(val[1],10)
         );
 
         _touches.push(touch);
@@ -136,12 +136,10 @@
         touchlist.push({
           target: self.element,
           identifier: index,
-          pageX: val[0],
-          pageY: val[1],
-          screenX: val[0],
-          screenY: val[1],
-          clientX: val[0],
-          clientY: val[1]
+          pageX: parseInt(val[0],10),
+          pageY: parseInt(val[1],10),
+          clientX: parseInt(val[0],10),
+          clientY: parseInt(val[1],10)
         });
       });
       return touchlist;
@@ -182,11 +180,12 @@
    */
   function triggerTouch(type) {
     var event = document.createEvent('Event');
-    var touchlist = this._createTouchList((type == 'end' || type == 'cancel') ? [] : this.touches);
+    var touchlist = this._createTouchList(this.touches);
 
     event.initEvent('touch' + type, true, true);
     event.touches = touchlist;
-
+    event.changedTouches = touchlist;
+    
     return this.element.dispatchEvent(event);
   }
 
