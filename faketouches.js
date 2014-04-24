@@ -21,13 +21,15 @@
 
   FakeTouches.POINTER_TOUCH_EVENTS = 100;
   FakeTouches.POINTER_MOUSE_EVENTS = 200;
+  FakeTouches.POINTER_PEN_EVENTS = 250;
   FakeTouches.TOUCH_EVENTS = 300;
   FakeTouches.MOUSE_EVENTS = 400;
   FakeTouches.TOUCH_AND_MOUSE_EVENTS = 500;
 
   FakeTouches.POINTER_TYPE_MOUSE = 'mouse';
   FakeTouches.POINTER_TYPE_TOUCH = 'touch';
-  
+  FakeTouches.POINTER_TYPE_PEN = 'pen';
+
   FakeTouches.IS_PHANTOMJS = navigator.userAgent.match(/phantomjs/i);
 
 
@@ -166,6 +168,10 @@
         triggerPointerEvents.call(this, type, FakeTouches.POINTER_TYPE_TOUCH);
         break;
 
+      case FakeTouches.POINTER_PEN_EVENTS:
+        triggerPointerEvents.call(this, type, FakeTouches.POINTER_TYPE_PEN);
+        break;
+
       case FakeTouches.POINTER_MOUSE_EVENTS:
         triggerPointerEvents.call(this, type, FakeTouches.POINTER_TYPE_MOUSE);
         break;
@@ -185,7 +191,7 @@
     event.initEvent('touch' + type, true, true);
     event.touches = touchlist;
     event.changedTouches = touchlist;
-    
+
     return this.element.dispatchEvent(event);
   }
 
@@ -236,6 +242,7 @@
 
       event.MSPOINTER_TYPE_MOUSE = FakeTouches.POINTER_TYPE_MOUSE;
       event.MSPOINTER_TYPE_TOUCH = FakeTouches.POINTER_TYPE_TOUCH;
+      event.MSPOINTER_TYPE_PEN = FakeTouches.POINTER_TYPE_PEN;
 
       event.pointerId = touch.identifier;
       event.pointerType = pointerType;
@@ -320,7 +327,7 @@
             moves++;
         }, 30);
     };
-    
+
     Gestures.DragRight = function(callback) {
         var self = this;
         self.setTouches([[100,100]]);
