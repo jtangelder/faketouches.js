@@ -203,7 +203,7 @@
             event.pageY = touchList[0].pageY;
             event.clientX = touchList[0].clientX;
             event.clientY = touchList[0].clientY;
-            event.which = 1;
+            event.button = 0;
         }
         return this.element.dispatchEvent(event);
     }
@@ -237,10 +237,7 @@
             event.pageY = touch.pageY;
             event.clientX = touch.clientX;
             event.clientY = touch.clientY;
-
-            if(pointerType === FakeTouches.POINTER_TYPE_MOUSE) {
-                event.which = 1;
-            }
+            event.buttons = (type == 'end') ? 0 : 1;
 
             self.element.dispatchEvent(event);
         });
