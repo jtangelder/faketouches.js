@@ -1,7 +1,9 @@
 faketouches.js
 ==============
 
-Library to send fake touchevents. Used for testing Hammer.js.
+Library to send fake touchevents. Used for testing Hammer.js 1.x.
+
+Its successor is available here: https://github.com/hammerjs/simulator
 
 ## Usage
 
