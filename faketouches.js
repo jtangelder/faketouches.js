@@ -16,7 +16,7 @@
         this.touches = [];
         this.touch_type = FakeTouches.TOUCH_EVENTS;
         this.has_multitouch = true;
-		this.use_prefixed_pointer_event_names = true;
+        this.use_prefixed_pointer_event_names = true;
     }
 
     FakeTouches.POINTER_TOUCH_EVENTS = 100;
@@ -225,7 +225,7 @@
             start: 'pointerdown',
             move: 'pointermove',
             end: 'pointerup'
-		};
+        };
 
         var touchList = this._createTouchList(this.touches);
         touchList.forEach(function(touch) {
