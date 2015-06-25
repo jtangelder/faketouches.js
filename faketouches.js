@@ -16,6 +16,7 @@
         this.touches = [];
         this.touch_type = FakeTouches.TOUCH_EVENTS;
         this.has_multitouch = true;
+        this.use_prefixed_pointer_event_names = true;
     }
 
     FakeTouches.POINTER_TOUCH_EVENTS = 100;
@@ -216,10 +217,14 @@
      */
     function triggerPointerEvents(type, pointerType) {
         var self = this;
-        var names = {
+        var names = self.use_prefixed_pointer_event_names ? {
             start: 'MSPointerDown',
             move: 'MSPointerMove',
             end: 'MSPointerUp'
+        } : {
+            start: 'pointerdown',
+            move: 'pointermove',
+            end: 'pointerup'
         };
 
         var touchList = this._createTouchList(this.touches);
